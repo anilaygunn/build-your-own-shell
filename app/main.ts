@@ -1,5 +1,4 @@
 import { createInterface } from "readline";
-import {which} from "which";
 
 const rl = createInterface({
   input: process.stdin,
@@ -8,15 +7,6 @@ const rl = createInterface({
 });
 
 const builtinCommands: Array<string> = ["echo", "exit","type"];
-
-async function isFileExecutable(filePath: string): Promise<boolean> {
-  try {
-    const stats = await fs.promises.stat(filePath);
-    return stats.isFile() && (stats.mode & 0o100) !== 0;
-  } catch {
-    return false;
-  }
-}
 
 // TODO: Uncomment the code below to pass the first stage
  rl.prompt();
@@ -39,12 +29,7 @@ async function isFileExecutable(filePath: string): Promise<boolean> {
             return;
         }
         else {
-            const path = which.sync(message, { nothrow: true });
-            if (path) {
-                console.log(`${message} is ${path}`);
-            } else {
-                console.log(`${message} not found`);
-            }
+            
         }
     }
     else {
