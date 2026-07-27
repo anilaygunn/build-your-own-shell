@@ -14,6 +14,10 @@ const rl = createInterface({
         rl.close();
         return;
     }
+    if (command.startsWith("echo ")) {
+        let message = command.slice(5);
+        console.log(message);
+    }
     console.log(`${command}: command not found`);
     rl.prompt();
  });
