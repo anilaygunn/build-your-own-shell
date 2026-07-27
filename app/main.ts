@@ -1,6 +1,7 @@
 import { createInterface } from "readline";
 import fs from "fs";
 import path from "path";
+import {execSync} from "child_process";
 
 const rl = createInterface({
   input: process.stdin,
@@ -52,6 +53,8 @@ rl.on("line", (command) => {
         console.log(`${message} not found`);
       }
     }
+  } else if(isExecutable(command)) {
+    execSync(command, { stdio: "inherit" });
   } else {
     console.log(`${command}: command not found`);
   }
