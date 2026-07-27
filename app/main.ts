@@ -1,7 +1,7 @@
 import { createInterface } from "readline";
 import fs from "fs";
 import path from "path";
-import {execSync} from "child_process";
+import { spawnSync } from "child_process";
 
 const rl = createInterface({
   input: process.stdin,
@@ -27,9 +27,13 @@ function findCommandInPath(command: string): string | null {
     if (fs.existsSync(filePath) && isExecutable(filePath)) {
       return filePath;
     }
-    // exists but not executable (or dir doesn't exist) -> keep searching
   }
   return null;
+}
+
+// naive whitespace tokenizer — fine until the quoting stage is introduced
+function parseArgs(line: string): string[] {
+  return line.trim().split(/\s+/).filter(Boolean);
 }
 
 rl.prompt();
@@ -53,10 +57,25 @@ rl.on("line", (command) => {
         console.log(`${message} not found`);
       }
     }
-  } else if(isExecutable(command)) {
-    execSync(command, { stdio: "inherit" });
   } else {
-    console.log(`${command}: command not found`);
+    const args = parseArgs(command);
+    const programName = args[0];
+
+    if (!programName) {
+      rl.prompt();
+      return;
+    }
+
+    const filePath = findCommandInPath(programName);
+    if (filePath) {
+      // argv0 should be the program name as typed, not the resolved full path
+      spawnSync(filePath, args.slice(1), {
+        stdio: "inherit",
+        argv0: programName,
+      });
+    } else {
+      console.log(`${command}: command not found`);
+    }
   }
   rl.prompt();
 });
