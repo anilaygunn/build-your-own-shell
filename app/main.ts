@@ -1,5 +1,5 @@
 import { createInterface } from "readline";
-import which from "which";
+import {which} from "which";
 
 const rl = createInterface({
   input: process.stdin,
