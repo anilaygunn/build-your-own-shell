@@ -1,4 +1,5 @@
 import { createInterface } from "readline";
+import {which} from "which";
 
 const rl = createInterface({
   input: process.stdin,
@@ -29,7 +30,12 @@ const builtinCommands: Array<string> = ["echo", "exit","type"];
             return;
         }
         else {
-            
+            const path = which.sync(message, { nothrow: true });
+            if (path) {
+                console.log(`${message} is ${path}`);
+            } else {
+                console.log(`${message} not found`);
+            }
         }
     }
     else {
