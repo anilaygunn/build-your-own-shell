@@ -55,9 +55,6 @@ function isExecutable(filePath: string): boolean {
                 if (isExecutable(filePath)) {
                     console.log(`${message} is ${filePath}`);
                 }
-                else {
-                    console.log(`${message} not found`);
-                }
             }
             else {
                 console.log(`${message} not found`);
