@@ -31,6 +31,7 @@ async function isFileExecutable(filePath: string): Promise<boolean> {
         console.log(message);
     }
     else if (command.startsWith("type ")) {
+
         let message = command.slice(5);
         if (builtinCommands.includes(message)) {
             console.log(`${message} is a shell builtin`);
