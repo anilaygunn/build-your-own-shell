@@ -11,7 +11,7 @@ const rl = createInterface({
 const builtinCommands: Array<string> = ["echo", "exit","type"];
 
 function findCommandInPath(command: string): string | null {
-  const pathEnv = process.env.PATH.split(path.delimiter);
+  const pathEnv = process.env.PATH?.split(path.delimiter);
   for (const p of pathEnv) {
     const filePath = path.join(p, command);
     if (fs.existsSync(filePath)) {
