@@ -21,10 +21,10 @@ function findCommandInPath(command: string): string | null {
   return null;
 }
 
-function isExecutable(filePath: string): boolean {
+function isExecutable(filePath: string): void {
   try {
     fs.accessSync(filePath, fs.constants.X_OK);
-    return true;
+    return ;
   } catch (err) {
     continue;
   }
