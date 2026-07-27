@@ -1,4 +1,6 @@
 import { createInterface } from "readline";
+import fs from "fs";
+import path from "path";
 
 const rl = createInterface({
   input: process.stdin,
@@ -8,6 +10,25 @@ const rl = createInterface({
 
 const builtinCommands: Array<string> = ["echo", "exit","type"];
 
+function findCommandInPath(command: string): string | null {
+  const pathEnv = process.env.PATH.split(path.delimiter);
+  for (const p of pathEnv) {
+    const filePath = path.join(p, command);
+    if (fs.existsSync(filePath)) {
+      return filePath;
+    }
+  }
+  return null;
+}
+
+function isExecutable(filePath: string): boolean {
+  try {
+    fs.accessSync(filePath, fs.constants.X_OK);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
 // TODO: Uncomment the code below to pass the first stage
  rl.prompt();
 
@@ -29,7 +50,18 @@ const builtinCommands: Array<string> = ["echo", "exit","type"];
             return;
         }
         else {
-            console.log(`${message} is external command`);
+            const filePath = findCommandInPath(message);
+            if (filePath) {
+                if (isExecutable(filePath)) {
+                    console.log(`${message} is ${filePath}`);
+                }
+                else {
+                    console.log(`${message} not found`);
+                }
+            }
+            else {
+                console.log(`${message} not found`);
+            }
         }
     }
     else {
