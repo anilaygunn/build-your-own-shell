@@ -26,7 +26,7 @@ function isExecutable(filePath: string): boolean {
     fs.accessSync(filePath, fs.constants.X_OK);
     return true;
   } catch (err) {
-    return false;
+    continue;
   }
 }
 // TODO: Uncomment the code below to pass the first stage
@@ -54,6 +54,9 @@ function isExecutable(filePath: string): boolean {
             if (filePath) {
                 if (isExecutable(filePath)) {
                     console.log(`${message} is ${filePath}`);
+                }
+                else {
+
                 }
             }
             else {
