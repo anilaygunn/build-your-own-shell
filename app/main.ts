@@ -31,7 +31,7 @@ const builtins : Record<string, CommandHandler> = {
       if (filePath && command in builtins) {
         console.log(`${command} is a shell builtin`);
       } else {
-        console.log(`${command} not found`);
+        console.log(`${command} is ${filePath ? "an external command" : "not found"}`);
       }
     }
   },
