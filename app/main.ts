@@ -39,7 +39,7 @@ const builtins : Record<string, CommandHandler> = {
     const command = args[0];
     if (args.length == 0) {
       const currentDir = process.cwd();
-      console.log(currentDir);
+      console.log("$");
     }
     if (args.length ===1 && command === "pwd") {
       const currentDir = process.cwd();
