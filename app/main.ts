@@ -9,15 +9,17 @@ const rl = createInterface({
   prompt: "$ ",
 });
 
-type CommandHandler = (args: string[]) => void;
+type CommandHandler = (args: string[]) => boolean;
 
-const builtins : Record<string, CommandHandler> = {
+const builtins: Record<string, CommandHandler> = {
   echo: (args: string[]) => {
     console.log(args.join(" "));
+    return false;
   },
   exit: () => {
     rl.close();
-    return;
+    process.exit(0);
+    return true;
   },
   type: (args: string[]) => {
     const command = args[0];
