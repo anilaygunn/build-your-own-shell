@@ -24,15 +24,17 @@ const builtins : Record<string, CommandHandler> = {
       console.log("type: missing argument");
       return;
     }
+
     if (command in builtins) {
       console.log(`${command} is a shell builtin`);
+      return;
+    }
+
+    const filePath = findCommandInPath(command);
+    if (filePath) {
+      console.log(`${command} is ${filePath}`);
     } else {
-      const filePath = findCommandInPath(command);
-      if (filePath && command in builtins) {
-        console.log(`${command} is a shell builtin`);
-      } else {
-        console.log(`${command} is ${filePath ? "an external command" : "not found"}`);
-      }
+      console.log(`${command} not found`);
     }
   },
   pwd: () => {
