@@ -38,7 +38,8 @@ const builtins : Record<string, CommandHandler> = {
   pwd : (args : string[]) => {
     const command = args[0];
     if (args.length == 0) {
-      return;
+      const currentDir = process.cwd();
+      console.log(currentDir);
     }
     if (args.length ===1 && command === "pwd") {
       const currentDir = process.cwd();
@@ -92,8 +93,9 @@ function runExternalCommand(args: string[]) : void {
 
 function handleCommand(input: string): void {
   const args = parseArgs(input);
+
   if (args.length === 0) {
-    rl.prompt
+    rl.prompt();
     return;
   }
   const command = args[0];
