@@ -35,16 +35,6 @@ const builtins : Record<string, CommandHandler> = {
       }
     }
   }
-  pwd: (args : string[]) => {
-    const command = args[0];
-    if(!command){
-      console.log("pwd : missing argument");
-      return;
-    }
-    if (command in builtins) {
-      
-    }
-  }
 };
 function isExecutable(filePath: string): boolean {
   try {
