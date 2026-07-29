@@ -1,7 +1,7 @@
-import { createInterface } from "readline";
-import fs from "fs";
-import path from "path";
-import { spawnSync } from "child_process";
+import { createInterface } from "node:readline";
+import fs from "node:fs";
+import path from "node:path";
+import { spawnSync } from "node:child_process";
 
 const rl = createInterface({
   input: process.stdin,
@@ -9,8 +9,33 @@ const rl = createInterface({
   prompt: "$ ",
 });
 
-const builtinCommands: Array<string> = ["echo", "exit", "type"];
+type CommandHandler = (args: string[]) => void;
 
+const builtins : Record<string, CommandHandler> = {
+  echo: (args: string[]) => {
+    console.log(args.join(" "));
+  },
+  exit: () => {
+    rl.close();
+  },
+  type: (args: string[]) => {
+    const command = args[0];
+    if (!command) {
+      console.log("type: missing argument");
+      return;
+    }
+    if (command in builtins) {
+      console.log(`${command} is a shell builtin`);
+    } else {
+      const filePath = findCommandInPath(command);
+      if (filePath) {
+        console.log(`${command} is ${filePath}`);
+      } else {
+        console.log(`${command} not found`);
+      }
+    }
+  }
+};
 function isExecutable(filePath: string): boolean {
   try {
     fs.accessSync(filePath, fs.constants.X_OK);
@@ -36,46 +61,36 @@ function parseArgs(line: string): string[] {
   return line.trim().split(/\s+/).filter(Boolean);
 }
 
-rl.prompt();
-
-rl.on("line", (command) => {
-  if (command === "exit") {
-    rl.close();
+function runExternalCommand(args: string[]) : void {
+  const programName = args[0];
+  if (!programName) {
     return;
-  } else if (command.startsWith("echo ")) {
-    const message = command.slice(5);
-    console.log(message);
-  } else if (command.startsWith("type ")) {
-    const message = command.slice(5);
-    if (builtinCommands.includes(message)) {
-      console.log(`${message} is a shell builtin`);
-    } else {
-      const filePath = findCommandInPath(message);
-      if (filePath) {
-        console.log(`${message} is ${filePath}`);
-      } else {
-        console.log(`${message} not found`);
-      }
-    }
+  }
+
+  const filePath = findCommandInPath(programName);
+  if (filePath) {
+    spawnSync(filePath, args.slice(1), { stdio: "inherit", argv0: programName});
+  }else{
+    console.log(`${programName}: command not found`);
+  }
+}
+
+function handleCommand(input: string): void {
+  const args = parseArgs(input);
+  if (args.length === 0) {
+    rl.prompt
+    return;
+  }
+  const command = args[0];
+
+  if (command in builtins) {
+    builtins[command](args.slice(1));
   } else {
-    const args = parseArgs(command);
-    const programName = args[0];
-
-    if (!programName) {
-      rl.prompt();
-      return;
-    }
-
-    const filePath = findCommandInPath(programName);
-    if (filePath) {
-      // argv0 should be the program name as typed, not the resolved full path
-      spawnSync(filePath, args.slice(1), {
-        stdio: "inherit",
-        argv0: programName,
-      });
-    } else {
-      console.log(`${command}: command not found`);
-    }
+    runExternalCommand(args);
   }
   rl.prompt();
-});
+}
+
+rl.prompt();
+rl.on("line", (handleCommand));
+
