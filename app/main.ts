@@ -35,25 +35,9 @@ const builtins : Record<string, CommandHandler> = {
       }
     }
   },
-  pwd : (args : string[]) => {
-    const command = args[0];
-    if (args.length == 0) {
-      const currentDir = process.cwd();
-      console.log(currentDir);
-    }
-    if (args.length ===1 && command === "pwd") {
-      const currentDir = process.cwd();
-      console.log(currentDir);
-      return;
-    } else {
-      const filePath = runExternalCommand(args.slice(1));
-      console.log(`${filePath}`);
-      return;
-    }
+  pwd: () => {
+    console.log(process.cwd());
   },
-  undefined: () => {
-    return;
-  }
 };
 function isExecutable(filePath: string): boolean {
   try {
@@ -112,5 +96,5 @@ function handleCommand(input: string): void {
 }
 
 rl.prompt();
-rl.on("line", (handleCommand));
+rl.on("line", handleCommand);
 
