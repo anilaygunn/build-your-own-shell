@@ -38,15 +38,17 @@ const builtins : Record<string, CommandHandler> = {
   pwd : (args : string[]) => {
     const command = args[0];
     if (args.length == 0) {
-      console.log("pwd : missing argument");
-      return;
+      const currentDir = process.cwd();
+      console.log(currentDir);
     }
     if (args.length ===1 && command === "pwd") {
       const currentDir = process.cwd();
       console.log(currentDir);
+      return;
     } else {
       const filePath = runExternalCommand(args.slice(1));
       console.log(`${filePath}`);
+      return;
     }
   }
 };
