@@ -34,7 +34,8 @@ const builtins : Record<string, CommandHandler> = {
         console.log(`${command} not found`);
       }
     }
-  }
+  },
+  pwd : () => {}
 };
 function isExecutable(filePath: string): boolean {
   try {
