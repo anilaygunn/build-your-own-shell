@@ -50,6 +50,9 @@ const builtins : Record<string, CommandHandler> = {
       console.log(`${filePath}`);
       return;
     }
+  },
+  undefined: () => {
+    return;
   }
 };
 function isExecutable(filePath: string): boolean {
