@@ -35,7 +35,20 @@ const builtins : Record<string, CommandHandler> = {
       }
     }
   },
-  pwd : () => {}
+  pwd : (args : string[]) => {
+    const command = args[0];
+    if (args.length == 0) {
+      console.log("pwd : missing argument");
+      return;
+    }
+    if (args.length ===1 && command === "pwd") {
+      const currentDir = process.cwd();
+      console.log(currentDir);
+    } else {
+      const filePath = runExternalCommand(args.slice(1));
+      console.log(`${filePath}`);
+    }
+  }
 };
 function isExecutable(filePath: string): boolean {
   try {
