@@ -17,6 +17,7 @@ const builtins : Record<string, CommandHandler> = {
   },
   exit: () => {
     rl.close();
+    return;
   },
   type: (args: string[]) => {
     const command = args[0];
