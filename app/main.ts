@@ -28,11 +28,21 @@ const builtins : Record<string, CommandHandler> = {
       console.log(`${command} is a shell builtin`);
     } else {
       const filePath = findCommandInPath(command);
-      if (filePath) {
-        console.log(`${command} is ${filePath}`);
+      if (filePath && command in builtins) {
+        console.log(`${command} is a shell builtin`);
       } else {
         console.log(`${command} not found`);
       }
+    }
+  }
+  pwd: (args : string[]) => {
+    const command = args[0];
+    if(!command){
+      console.log("pwd : missing argument");
+      return;
+    }
+    if (command in builtins) {
+      
     }
   }
 };
