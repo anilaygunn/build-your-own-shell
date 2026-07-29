@@ -23,12 +23,12 @@ const builtins : Record<string, CommandHandler> = {
     const command = args[0];
     if (!command) {
       console.log("type: missing argument");
-      return;
+      return false;
     }
 
     if (command in builtins) {
       console.log(`${command} is a shell builtin`);
-      return;
+      return false;
     }
 
     const filePath = findCommandInPath(command);
@@ -37,9 +37,12 @@ const builtins : Record<string, CommandHandler> = {
     } else {
       console.log(`${command} not found`);
     }
+
+    return false;
   },
   pwd: () => {
     console.log(process.cwd());
+    return false;
   },
 };
 function isExecutable(filePath: string): boolean {
@@ -91,7 +94,10 @@ function handleCommand(input: string): void {
   const command = args[0];
 
   if (command in builtins) {
-    builtins[command](args.slice(1));
+    const shouldExit = builtins[command](args.slice(1));
+    if (shouldExit) {
+      return;
+    }
   } else {
     runExternalCommand(args);
   }
