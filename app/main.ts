@@ -46,21 +46,36 @@ const builtins: Record<string, CommandHandler> = {
     console.log(process.cwd());
     return false;
   },
-  cd : (args: string[]) => {
-    const dir = args[0]
-    const filePath = findCommandInPath(dir);
-    if (dir === "~") {
-      process.chdir(process.env.HOME || "/");
+  cd: (args: string[]) => {
+    const dir = args[0] ?? "~";
+    const target = dir === "~" ? (process.env.HOME || "/") : dir;
+
+    if (!target) {
+      console.log("cd: missing argument");
       return false;
     }
-    if (!filePath) {
-      console.log(`cd: ${filePath}: No such file or directory`);
-      return false;
-    }else {
-      process.chdir(filePath);
+
+    const resolvedPath = path.resolve(process.cwd(), target);
+
+    if (!fs.existsSync(resolvedPath)) {
+      console.log(`cd: ${dir}: No such file or directory`);
       return false;
     }
-  }
+
+    const stat = fs.statSync(resolvedPath);
+    if (!stat.isDirectory()) {
+      console.log(`cd: ${dir}: Not a directory`);
+      return false;
+    }
+
+    try {
+      process.chdir(resolvedPath);
+    } catch (error) {
+      console.log(`cd: ${dir}: ${error instanceof Error ? error.message : "unknown error"}`);
+    }
+
+    return false;
+  },
 
 };
 function isExecutable(filePath: string): boolean {
