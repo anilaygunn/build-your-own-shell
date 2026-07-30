@@ -19,7 +19,7 @@ const builtins: Record<string, CommandHandler> = {
   exit: () => {
     rl.close();
     process.exit(0);
-    return true;
+    return true; 
   },
   type: (args: string[]) => {
     const command = args[0];
@@ -46,6 +46,22 @@ const builtins: Record<string, CommandHandler> = {
     console.log(process.cwd());
     return false;
   },
+  cd : (args: string[]) => {
+    const dir = args[0]
+    const filePath = findCommandInPath(dir);
+    if (dir === "~") {
+      process.chdir(process.env.HOME || "/");
+      return false;
+    }
+    if (!filePath) {
+      console.log("cd: ${filePath} no such file or directory");
+      return false;
+    }else {
+      process.chdir(filePath);
+      return false;
+    }
+  }
+
 };
 function isExecutable(filePath: string): boolean {
   try {
