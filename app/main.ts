@@ -54,7 +54,7 @@ const builtins: Record<string, CommandHandler> = {
       return false;
     }
     if (!filePath) {
-      console.log("cd: ${filePath} no such file or directory");
+      console.log(`cd: ${filePath}: No such file or directory`);
       return false;
     }else {
       process.chdir(filePath);
