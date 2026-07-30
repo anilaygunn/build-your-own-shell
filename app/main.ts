@@ -98,9 +98,33 @@ function findCommandInPath(command: string): string | null {
   return null;
 }
 
-// naive whitespace tokenizer — fine until the quoting stage is introduced
 function parseArgs(line: string): string[] {
-  return line.trim().split(/\s+/).filter(Boolean);
+  const args: string[] = [];
+  let current = "";
+  let inSingleQuotes = false;
+
+  for (const char of line.trim()) {
+    if (char === "'") {
+      inSingleQuotes = !inSingleQuotes;
+      continue;
+    }
+
+    if (/\s/.test(char) && !inSingleQuotes) {
+      if (current) {
+        args.push(current);
+        current = "";
+      }
+      continue;
+    }
+
+    current += char;
+  }
+
+  if (current) {
+    args.push(current);
+  }
+
+  return args;
 }
 
 function runExternalCommand(args: string[]) : void {
